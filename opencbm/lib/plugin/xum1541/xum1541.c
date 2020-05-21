@@ -552,13 +552,6 @@ xum1541_init(struct opencbm_usb_handle **HandleXum1541_p, int PortNumber)
     }
 
     do {
-        // Select first and only device configuration.
-        ret = usb.set_configuration(HandleXum1541->devh, 1);
-        if (ret != LIBUSB_SUCCESS) {
-            xum1541_cleanup(HandleXum1541, "USB error: %s\n", usb.error_name(ret));
-            break;
-        }
-
         /*
          * Get exclusive access to interface 0.
          * After this point, do cleanup using xum1541_close() instead of
