@@ -671,7 +671,7 @@ xum1541_close(struct opencbm_usb_handle *HandleXum1541)
         fprintf(stderr, "USB release intf error: %s\n", usb.error_name(ret));
 
     ret = usb.set_configuration(HandleXum1541->devh, -1);
-    if (ret != LIBUSB_SUCCESS) {
+    if (ret != LIBUSB_SUCCESS && ret != LIBUSB_ERROR_INVALID_PARAM) {
         fprintf(stderr, "USB deconfig device error: %d %s\n", ret, usb.error_name(ret));
     }
 #if HAVE_LIBUSB0
