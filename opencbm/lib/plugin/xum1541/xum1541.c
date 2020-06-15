@@ -640,13 +640,15 @@ xum1541_close(struct opencbm_usb_handle *HandleXum1541)
 
     xum1541_dbg(0, "Closing USB link");
 
+    unsigned char buf;
+
     if (HandleXum1541->devh != NULL) {
 #if HAVE_LIBUSB0
-        ret = usb.control_msg(HandleXum1541->devh, USB_TYPE_CLASS | USB_ENDPOINT_OUT,
-            XUM1541_SHUTDOWN, 0, 0, NULL, 0, 1000);
+        ret = usb.control_msg(HandleXum1541->devh, USB_TYPE_CLASS | USB_ENDPOINT_IN,
+            XUM1541_SHUTDOWN, 0, 0, &buf, 1, 1000);
 #elif HAVE_LIBUSB1
-        ret = usb.control_transfer(HandleXum1541->devh, LIBUSB_REQUEST_TYPE_CLASS | LIBUSB_ENDPOINT_OUT,
-            XUM1541_SHUTDOWN, 0, 0, NULL, 0, 1000);
+        ret = usb.control_transfer(HandleXum1541->devh, LIBUSB_REQUEST_TYPE_CLASS | LIBUSB_ENDPOINT_IN,
+            XUM1541_SHUTDOWN, 0, 0, &buf, 1, 1000);
 #endif
         if (ret < 0) {
             fprintf(stderr,
@@ -695,12 +697,14 @@ xum1541_control_msg(struct opencbm_usb_handle *HandleXum1541, unsigned int cmd)
 
     xum1541_dbg(1, "control msg %d", cmd);
 
+    unsigned char buf;
+
 #if HAVE_LIBUSB0
-    nBytes = usb.control_msg(HandleXum1541->devh, USB_TYPE_CLASS | USB_ENDPOINT_OUT,
-        cmd, 0, 0, NULL, 0, USB_TIMEOUT);
+    nBytes = usb.control_msg(HandleXum1541->devh, USB_TYPE_CLASS | USB_ENDPOINT_IN,
+        cmd, 0, 0, &buf, 1, USB_TIMEOUT);
 #elif HAVE_LIBUSB1
-    nBytes = usb.control_transfer(HandleXum1541->devh, LIBUSB_REQUEST_TYPE_CLASS | LIBUSB_ENDPOINT_OUT,
-        (uint8_t) cmd, 0, 0, NULL, 0, USB_TIMEOUT);
+    nBytes = usb.control_transfer(HandleXum1541->devh, LIBUSB_REQUEST_TYPE_CLASS | LIBUSB_ENDPOINT_IN,
+        (uint8_t) cmd, 0, 0, &buf, 1, USB_TIMEOUT);
 #endif
     if (nBytes < 0) {
         fprintf(stderr, "USB error in xum1541_control_msg: %s\n",
@@ -708,7 +712,7 @@ xum1541_control_msg(struct opencbm_usb_handle *HandleXum1541, unsigned int cmd)
         exit(-1); /** \todo WHY? */
     }
 
-    return nBytes;
+    return 0;
 }
 
 static int
