@@ -563,16 +563,14 @@ xum1541_init(struct opencbm_usb_handle **HandleXum1541_p, int PortNumber)
             break;
         }
 
+#if __linux__
         // Set interface to make sure data toggles are reset
 #if HAVE_LIBUSB0
-        ret = usb.set_altinterface(HandleXum1541->devh, 0);
+        usb.set_altinterface(HandleXum1541->devh, 0);
 #elif HAVE_LIBUSB1
-        ret = usb.set_interface_alt_setting(HandleXum1541->devh, 0, 0);
+        usb.set_interface_alt_setting(HandleXum1541->devh, 0, 0);
 #endif
-        if (ret != LIBUSB_SUCCESS) {
-            fprintf(stderr, "USB error: %s\n", usb.error_name(ret));
-            break;
-        }
+#endif
 
         // Check the basic device info message for firmware version
         memset(devInfo, 0, sizeof(devInfo));
