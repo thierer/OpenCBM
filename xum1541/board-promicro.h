@@ -171,7 +171,7 @@ iec_srq_write(uint8_t data)
         data <<= 1;          // next bit
         DELAY_US(0.3);       // (nibtools relies on this timing, do not change)
         iec_release(IO_SRQ); // release SRQ
-        DELAY_US(0.935);     // (nibtools relies on this timing, do not change)
+        DELAY_US(1.05);     // (nibtools relies on this timing, do not change)
     }
 }
 
